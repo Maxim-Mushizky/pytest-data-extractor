@@ -22,7 +22,7 @@ def test_bar(upload_manager):
 
 4. The data will be now stored for the test_name 'test_bar' with the following parameters:
 ```json
-
+[
     {
         "test_input": 1000,
         "func_args": {
