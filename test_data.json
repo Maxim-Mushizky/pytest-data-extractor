@@ -1,0 +1,15 @@
+[
+    {
+        "test_input": 15,
+        "func_args": {
+            "upload_manager": "function"
+        },
+        "expected": 15,
+        "actual": 15,
+        "operator": "==",
+        "test_func": "test_demo_1",
+        "test_status": 1,
+        "call_duration": 0.01100017805583775,
+        "setup_duration": 0.0
+    }
+]
