@@ -1,4 +1,4 @@
-from src.test_data_extractor.data_containers import TestData
+from data_extractor.data_containers import TestData
 import pytest
 import dataclasses
 from typing import (
