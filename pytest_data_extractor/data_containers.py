@@ -1,9 +1,6 @@
-from dataclasses import dataclass,field
-from typing import (
-    Optional,
-    Any,
-    Dict
-)
+from dataclasses import dataclass, field
+from typing import Optional, Any, Dict
+
 
 @dataclass
 class TestData:
@@ -13,6 +10,6 @@ class TestData:
     actual: Optional[Any] = field(default=None)
     operator: Optional[str] = field(default=None)
     test_func: Optional[str] = field(default=None)
-    test_status: int = field(default=0) # 1- Pass , 0- Fail, -1- Skip
+    test_status: int = field(default=0)  # 1- Pass , 0- Fail, -1- Skip
     call_duration: float = field(default_factory=float)
     setup_duration: float = field(default_factory=float)
