@@ -18,16 +18,16 @@ _PATH = "test_data.json"
 
 @pytest.hookimpl(tryfirst=True)
 def pytest_assertrepr_compare(op, left, right):
-    if len(Storage.data) and Storage.data[-1].operator is None:
-        Storage.data[-1].actual = left
-        Storage.data[-1].expected = right
-        Storage.data[-1].operator = op
+    if len(Storage.data) and Storage.data[-1].test_operator is None:
+        Storage.data[-1].actual_result = left
+        Storage.data[-1].expected_result = right
+        Storage.data[-1].test_operator = op
         Storage.data[-1].func_args = func_args
     else:
         test_data = TestData(
-            actual=left,
-            expected=right,
-            operator=op,
+            actual_result=left,
+            expected_result=right,
+            test_operator=op,
             func_args=func_args
         )
         Storage.data.append(test_data)
@@ -41,7 +41,7 @@ def pytest_sessionfinish():
     storage_as_dict = []
 
     for data in Storage.data:
-        if data.expected is None and data.actual is None and data.test_input is None:
+        if data.expected_result is None and data.actual_result is None and data.test_input is None:
             continue # Drop from the finished file all irrelevant calls for the upload_manager fixture
         if isinstance(data.func_args, dict):
             for ik, iv in data.func_args.items():
@@ -71,7 +71,7 @@ def pytest_report_teststatus(report):
     if report.when == 'setup':
         Storage.data[-1].setup_duration = report.duration
     elif report.when == 'call':
-        Storage.data[-1].call_duration = report.duration
+        Storage.data[-1].test_duration = report.duration
 
 @pytest.hookimpl
 def pytest_runtest_protocol(item):
@@ -90,4 +90,3 @@ def pytest_runtest_protocol(item):
             Storage.data.append(test_data)
     else:
         Storage.data.append(test_data)
-
