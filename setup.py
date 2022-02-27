@@ -47,19 +47,21 @@ setup(
     author='Maxim Mushizky',
     author_email='maximmu87@gmail.com',
     maintainer='Maxim Mushizky',
-    maintainer_email='marszaripov@gmail.com',
     license='MIT',
     description = 'A pytest plugin to extract relevant metadata about tests into an external file (currently only json support)',
     long_description=read('README.md'),
-    packages=['src.data_extractor'],
     install_requires=['pytest>=7.0.1'],
     classifiers=[
-        'Framework :: Pytest'
+        'Framework :: Pytest',
+        "Licence :: MIT",
+        "Operating System :: Multi-platform",
+        "Programming Language :: Python :: 3" 
     ],
-    # entry_points={
-    #     'pytest11': [
-    #         'data-extractor = src.data_extractors.pytest_extractor',
-    #     ],
-    # },
+    entry_points={
+        'pytest11': [
+            'name_of_plugin = pytest_data_extractor.pytest_extractor',
+        ],
+    },
+    packages=['pytest_data_extractor']
 )
 

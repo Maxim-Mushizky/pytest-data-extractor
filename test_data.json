@@ -9,7 +9,7 @@
         "operator": "==",
         "test_func": "test_demo_1",
         "test_status": 1,
-        "call_duration": 0.010670223040506244,
+        "call_duration": 0.010955141042359173,
         "setup_duration": 0.0
     }
 ]
