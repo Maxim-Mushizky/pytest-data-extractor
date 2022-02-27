@@ -3,10 +3,17 @@ Pytest plugin intended for extracting metadata about the test
 
 ## Version 0.1.0 (Temporary version, the guide will change) usage
 
+
 1. Go to conftest.py file (no matter what level) and import the entirety of the pytest_extractor file in the following way:
 
 ```python
 from src.test_data_extractor.pytest_extractor import *
+```
+Alternativly, the data_extractor folder can be placed anywhere in an external project, so the import will change accoridngly.
+The important thing is both files need to be present in the same folder, so if you place the files in the folder called infra, the import will be:
+
+```python
+from infra.test_data_extractor.pytest_extractor import *
 ```
 
 2. In the data_containers file you can add additional containers for the test data.
