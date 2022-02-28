@@ -1,7 +1,6 @@
 from typing import (
     Optional,
-    List,
-    Callable
+    List
 )
 from dataclasses import dataclass
 import dataclasses
@@ -59,7 +58,7 @@ class SessionOutputGenerator:
 
             storage_as_dict.append(dataclasses.asdict(d))
         self.__mkdir_if_none_exists(self.output_dir)
-        _path = self._get_full_path_in_dir(self.output_dir, file_prefix) 
+        _path = self._get_full_path_in_dir(self.output_dir, file_prefix)
         with open(_path, "w") as f:
             json.dump(storage_as_dict, f, indent=4)
 
