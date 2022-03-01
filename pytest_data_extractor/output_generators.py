@@ -11,8 +11,8 @@ import datetime
 
 
 class SessionOutputGenerator:
-    __DEFAULT_TEMP = "extractor_files.temp"
-    __DEFAULT_OUTPUT = "extractor_files.output"
+    DEFAULT_TEMP = "extractor_files.temp"
+    DEFAULT_OUTPUT = "extractor_files.output"
     __DEFAULT_FILE_PREFIX = "output_data_"
     __TIME_FORMAT = "%Y%m%d_%H_%M_%S_%f"
 
@@ -23,9 +23,9 @@ class SessionOutputGenerator:
             data: Optional[dataclass] = None,
     ) -> None:
         if output_dir is None:
-            output_dir = self.__DEFAULT_OUTPUT
+            output_dir = self.DEFAULT_OUTPUT
         if temp_dir is None:
-            temp_dir = self.__DEFAULT_TEMP
+            temp_dir = self.DEFAULT_TEMP
         self._output_dir = output_dir
         self._temp_dir = temp_dir
         self._data = data

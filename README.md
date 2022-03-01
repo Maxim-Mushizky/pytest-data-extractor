@@ -1,5 +1,6 @@
 # pytest-data-extractor
-Pytest plugin intended for extracting metadata about the test 
+
+Pytest plugin intended for extracting metadata about the test
 
 ## Version 0.1.1 (Temporary version, the guide will change) usage
 
@@ -19,23 +20,45 @@ def test_bar(upload_manager):
     assert to_compare == to_compare, "assert failed"
 ```
 
-4. The data will be now stored for the test_name 'test_bar' with the following parameters:
+3. The data will be now stored for the test_name 'test_bar' with the following parameters:
+
 ```json
 [
-    {
-        "test_input": 1000,
-        "expected": 1000,
-        "actual": 1000,
-        "operator": "==",
-        "test_func": "test_bar",
-        "test_status": 1,
-        "call_duration": 0.010749192908406258,
-    }
+  {
+    "test_input": 1000,
+    "expected": 1000,
+    "actual": 1000,
+    "operator": "==",
+    "test_func": "test_bar",
+    "test_status": 1,
+    "call_duration": 0.010749192908406258
+  }
 ]
 
 ```
-5. The test comparison itself will be stored with a convention of:
+
+4. The test comparison itself will be stored with a convention of:
     * left- actual result.
     * right- expected result.
 
-6. The data will be stored in a json file in a path specified by the _PATH variable in pytest_extractor.
+## conftes.py hooks and fixtures
+
+In order to change the folder for either temporary or output files use conftest.py with the correct fixtures. example:
+
+```python
+# conftest.py
+import pytest
+
+
+@pytest.fixture
+def session_output_dir():
+    return "my_files.output"
+
+
+@pytest.fixture
+def session_temp_dir():
+    return "my_files.temp"
+
+```
+
+The default directories will be at the root where the pytest is called.
