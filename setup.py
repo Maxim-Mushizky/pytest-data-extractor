@@ -10,7 +10,7 @@ def read(fname):
 
 setup(
     name="pytest_data_extractor",
-    version="0.1.0",
+    version="0.1.1",
     author="Maxim Mushizky",
     author_email="maximmu87@gmail.com",
     maintainer="Maxim Mushizky",
@@ -20,7 +20,7 @@ setup(
     install_requires=[
         "pytest>=7.0.1",
         "pandas>=1.3.5"
-                      ],
+    ],
     classifiers=[
         "Framework :: Pytest",
         "Licence :: MIT",

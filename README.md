@@ -1,23 +1,15 @@
 # pytest-data-extractor
 Pytest plugin intended for extracting metadata about the test 
 
-## Version 0.1.0 (Temporary version, the guide will change) usage
+## Version 0.1.1 (Temporary version, the guide will change) usage
 
+1. pip install the package to the your project's virtual environment. Directly from plugin folder:
 
-1. Go to conftest.py file (no matter what level) and import the entirety of the pytest_extractor file in the following way:
-
-```python
-from src.test_data_extractor.pytest_extractor import *
-```
-Alternativly, the data_extractor folder can be placed anywhere in an external project, so the import will change accoridngly.
-The important thing is both files need to be present in the same folder, so if you place the files in the folder called infra, the import will be:
-
-```python
-from infra.test_data_extractor.pytest_extractor import *
+```bash
+~/pytest-data-extractor$ pip install -e .
 ```
 
-2. In the data_containers file you can add additional containers for the test data.
-3. Go to a test file and now simply add upload_manager fixture in order to save a variable (except callables), Like so:
+2. Go to a test file and now simply add upload_manager fixture in order to save a variable (except callables), Like so:
 
 ```python
 # test_foo.py
@@ -32,16 +24,12 @@ def test_bar(upload_manager):
 [
     {
         "test_input": 1000,
-        "func_args": {
-            "upload_manager": "function"
-        },
         "expected": 1000,
         "actual": 1000,
         "operator": "==",
         "test_func": "test_bar",
         "test_status": 1,
         "call_duration": 0.010749192908406258,
-        "setup_duration": 0.0
     }
 ]
 

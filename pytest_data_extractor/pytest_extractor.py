@@ -42,7 +42,7 @@ def pytest_assertion_pass():
 
 @pytest.hookimpl(trylast=True)
 def pytest_sessionfinish():
-    session_obj = SessionOutputGenerator(data = Storage.data)
+    session_obj = SessionOutputGenerator(data=Storage.data)
     session_obj.output_json()
 
 
