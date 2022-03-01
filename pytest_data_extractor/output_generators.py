@@ -50,7 +50,7 @@ class SessionOutputGenerator:
 
         storage_as_dict = []
         for d in self.data:
-            if d.expected is None and d.actual is None and d.test_input is None:
+            if d.expected_result is None and d.actual_result is None and d.test_input is None:
                 continue  # Drop from the finished file all irrelevant calls for the upload_manager fixture
             if isinstance(d.test_input, pd.DataFrame):
                 fpath = DirDataSerializer(dirname=self._temp_dir).get_pandas_filename(data=d.test_input,

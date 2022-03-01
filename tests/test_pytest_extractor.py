@@ -13,6 +13,7 @@ def test_dataframe1(upload_manager):
     df = upload_manager(pd.DataFrame(df_dict))
     assert isinstance(df, pd.DataFrame)
 
+
 def test_dataframe2(upload_manager):
     # create a large dataframe
     df = upload_manager(pd.DataFrame(np.random.randint(0, 100, size=(10000, 4)), columns=list('ABCD')))
@@ -26,7 +27,6 @@ def test_boolean(upload_manager):
 
 def test_full_upload_manager(upload_manager):
     my_val = upload_manager(var_value=12,
-                            expected=144,
-                            actual=12 ** 2)
+                            expected_result=144,
+                            actual_result=12 ** 2)
     assert my_val ** 2 == 144, "assertion failed"
-

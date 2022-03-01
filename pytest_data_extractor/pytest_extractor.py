@@ -51,15 +51,15 @@ def update_session_temp_dir(session_temp_dir: Optional[str]) -> None:
 
 @pytest.hookimpl(tryfirst=True)
 def pytest_assertrepr_compare(op, left, right):
-    if len(Storage.data) and Storage.data[-1].operator is None:
-        if Storage.data[-1].actual is None:
-            Storage.data[-1].actual = left
-        if Storage.data[-1].expected is None:
-            Storage.data[-1].expected = right
-        Storage.data[-1].operator = op
+    if len(Storage.data) and Storage.data[-1].test_operator is None:
+        if Storage.data[-1].actual_result is None:
+            Storage.data[-1].actual_result = left
+        if Storage.data[-1].expected_result is None:
+            Storage.data[-1].expected_result = right
+        Storage.data[-1].test_operator = op
         # Storage.data[-1].func_args = func_args
     else:
-        test_data = TestData(actual=left, expected=right, operator=op)  # func_args=func_args)
+        test_data = TestData(actual_result=left, expected_result=right, test_operator=op)  # func_args=func_args)
         Storage.data.append(test_data)
 
 
@@ -77,11 +77,11 @@ def pytest_sessionfinish():
 @pytest.fixture(scope="function")
 def upload_manager():
     def manager(var_value: TestInput,
-                expected: Optional[TestInput] = None,
-                actual: Optional[TestInput] = None) -> TestInput:
+                expected_result: Optional[TestInput] = None,
+                actual_result: Optional[TestInput] = None) -> TestInput:
         test_data = TestData(test_input=var_value,
-                             expected=expected,
-                             actual=actual,
+                             expected_result=expected_result,
+                             actual_result=actual_result,
                              test_func=inspect.stack()[1][3])
         Storage.data.append(test_data)
         return var_value
@@ -96,7 +96,7 @@ def pytest_report_teststatus(report):
 
     # manage times
     if report.when == "call":
-        Storage.data[-1].call_duration = report.duration
+        Storage.data[-1].test_duration = report.duration
 
 
 @pytest.hookimpl
