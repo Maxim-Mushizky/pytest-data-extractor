@@ -15,26 +15,38 @@ class Storage:
     data: List[TestData] = []
 
 
-@pytest.fixture(scope='session', autouse=True)
-def update_session_output_dir(session_output_dir) -> None:
+@pytest.fixture
+def session_output_dir():
+    return None
+
+
+@pytest.fixture
+def session_temp_dir():
+    return None
+
+
+@pytest.fixture(scope='function', autouse=True)
+def update_session_output_dir(session_output_dir: Optional[str]) -> None:
     """
     This fixture changes SessionOutputGenerator output file folder path
     To use it create in a conftest.py a fixture with the name session_output_dir
     :param output_dir: new output dir
     :return: None
     """
-    SessionOutputGenerator.DEFAULT_OUTPUT = session_output_dir
+    if session_output_dir is not None:
+        SessionOutputGenerator.DEFAULT_OUTPUT = session_output_dir
 
 
-@pytest.fixture(scope='session', autouse=True)
-def update_session_temp_dir(session_temp_dir: str) -> None:
+@pytest.fixture(scope='function', autouse=True)
+def update_session_temp_dir(session_temp_dir: Optional[str]) -> None:
     """
     This fixture changes SessionOutputGenerator temp file folder path.
     To use it create in a conftest.py a fixture with the name session_temp_dir
     :param output_dir: new output dir
     :return: None
     """
-    SessionOutputGenerator.DEFAULT_TEMP = session_temp_dir
+    if session_temp_dir is not None:
+        SessionOutputGenerator.DEFAULT_TEMP = session_temp_dir
 
 
 @pytest.hookimpl(tryfirst=True)
