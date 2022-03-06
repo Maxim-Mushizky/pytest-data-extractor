@@ -1,5 +1,5 @@
 from .data_containers import TestData
-from .output_generators import SessionOutputGenerator
+from .output_generators import SuiteDataOutputGenerator
 import pytest
 import inspect
 from typing import (
@@ -11,67 +11,84 @@ from typing import (
 TestInput = TypeVar("TestInput")
 
 
-class Storage:
+class Cache:
     data: List[TestData] = []
 
 
 @pytest.fixture
-def session_output_dir():
+def suite_output_dir():
     return None
 
 
 @pytest.fixture
-def session_temp_dir():
+def suite_cache_dir():
     return None
 
 
-@pytest.fixture(scope='function', autouse=True)
-def update_session_output_dir(session_output_dir: Optional[str]) -> None:
+@pytest.fixture
+def suite_output_file_prefix():
+    return None
+
+
+@pytest.fixture(autouse=True)
+def update_suite_output_dir(suite_output_dir) -> None:
     """
-    This fixture changes SessionOutputGenerator output file folder path
-    To use it create in a conftest.py a fixture with the name session_output_dir
+    This fixture changes SuiteDataOutputGenerator output file folder path
+    To use it create in a conftest.py a fixture with the name suite_output_dir
     :param output_dir: new output dir
     :return: None
     """
-    if session_output_dir is not None:
-        SessionOutputGenerator.DEFAULT_OUTPUT = session_output_dir
+    if suite_output_dir is not None:
+        SuiteDataOutputGenerator.OUTPUT_DIR = suite_output_dir
 
 
-@pytest.fixture(scope='function', autouse=True)
-def update_session_temp_dir(session_temp_dir: Optional[str]) -> None:
+@pytest.fixture(autouse=True)
+def update_suite_temp_dir(suite_cache_dir) -> None:
     """
-    This fixture changes SessionOutputGenerator temp file folder path.
-    To use it create in a conftest.py a fixture with the name session_temp_dir
-    :param output_dir: new output dir
+    This fixture changes SuiteDataOutputGenerator cache file folder path.
+    To use it create in a conftest.py a fixture with the name suite_cache_dir
+    :param suite_cache_dir: Relative of absolute path to the cache directory
     :return: None
     """
-    if session_temp_dir is not None:
-        SessionOutputGenerator.DEFAULT_TEMP = session_temp_dir
+    if suite_cache_dir is not None:
+        SuiteDataOutputGenerator.CACHE_FILES_DIR = suite_cache_dir
+
+
+@pytest.fixture(autouse=True)
+def update_suite_output_file_prefix(suite_output_file_prefix: Optional[str]) -> None:
+    """
+    This fixture changes SuiteDataOutputGenerator file prefix.
+    To use it create in a conftest.py a fixture with the name suite_output_file_prefix
+    :param suite_output_file_prefix: prefix of the output files
+    :return: None
+    """
+    if suite_output_file_prefix is not None:
+        SuiteDataOutputGenerator.FILE_PREFIX = suite_output_file_prefix
 
 
 @pytest.hookimpl(tryfirst=True)
 def pytest_assertrepr_compare(op, left, right):
-    if len(Storage.data) and Storage.data[-1].test_operator is None:
-        if Storage.data[-1].actual_result is None:
-            Storage.data[-1].actual_result = left
-        if Storage.data[-1].expected_result is None:
-            Storage.data[-1].expected_result = right
-        Storage.data[-1].test_operator = op
+    if len(Cache.data) and Cache.data[-1].test_operator is None:
+        if Cache.data[-1].actual_result is None:
+            Cache.data[-1].actual_result = left
+        if Cache.data[-1].expected_result is None:
+            Cache.data[-1].expected_result = right
+        Cache.data[-1].test_operator = op
         # Storage.data[-1].func_args = func_args
     else:
         test_data = TestData(actual_result=left, expected_result=right, test_operator=op)  # func_args=func_args)
-        Storage.data.append(test_data)
+        Cache.data.append(test_data)
 
 
 @pytest.hookimpl
 def pytest_assertion_pass():
-    Storage.data[-1].test_status = 1
+    Cache.data[-1].test_status = 1
 
 
 @pytest.hookimpl(trylast=True)
 def pytest_sessionfinish():
-    session_obj = SessionOutputGenerator(data=Storage.data)
-    session_obj.output_json()
+    session_obj = SuiteDataOutputGenerator(data=Cache.data)
+    session_obj.output_to_json()
 
 
 @pytest.fixture(scope="function")
@@ -83,7 +100,7 @@ def upload_manager():
                              expected_result=expected_result,
                              actual_result=actual_result,
                              test_func=inspect.stack()[1][3])
-        Storage.data.append(test_data)
+        Cache.data.append(test_data)
         return var_value
 
     return manager
@@ -92,11 +109,11 @@ def upload_manager():
 @pytest.hookimpl
 def pytest_report_teststatus(report):
     if report.when == "call" and report.skipped:
-        Storage.data[-1].test_status = -1  # Test was skipped
+        Cache.data[-1].test_status = -1  # Test was skipped
 
     # manage times
     if report.when == "call":
-        Storage.data[-1].test_duration = report.duration
+        Cache.data[-1].test_duration = report.duration
 
 
 @pytest.hookimpl
@@ -105,11 +122,11 @@ def pytest_runtest_protocol(item):
     if hasattr(item, "function") and hasattr(item, "funcargs"):
         # func_args = item.funcargs
         test_data = TestData(test_func=item.function.__name__)  # func_args=func_args
-    if len(Storage.data) > 0:
-        if Storage.data[-1].test_func is None:
-            Storage.data[-1].test_func = test_data.test_func
+    if len(Cache.data) > 0:
+        if Cache.data[-1].test_func is None:
+            Cache.data[-1].test_func = test_data.test_func
             # Storage.data[-1].func_args = test_data.test_input
         else:
-            Storage.data.append(test_data)
+            Cache.data.append(test_data)
     else:
-        Storage.data.append(test_data)
+        Cache.data.append(test_data)
