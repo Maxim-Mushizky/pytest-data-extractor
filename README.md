@@ -40,6 +40,7 @@ For a json file output:
 ```
 ## Miscellaneous 
 For order sakes, the plugin will use a test comparison convention of:
+
     * left- actual result.
     * right- expected result.
 
