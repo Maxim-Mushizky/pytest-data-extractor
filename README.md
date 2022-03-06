@@ -2,15 +2,15 @@
 
 Pytest plugin intended for extracting metadata about the test
 
-## Version 0.1.1 (Temporary version, the guide will change) usage
+## Version 0.1.3
 
-1. pip install the package to the your project's virtual environment. Directly from plugin folder:
+pip install the package to the your project's virtual environment. Directly from plugin folder:
 
 ```bash
 ~/pytest-data-extractor$ pip install -e .
 ```
 
-2. Go to a test file and now simply add upload_manager fixture in order to save a variable (except callables), Like so:
+Go to a test file and now simply add upload_manager fixture in order to save a variable (except callable), Like so:
 
 ```python
 # test_foo.py
@@ -20,7 +20,9 @@ def test_bar(upload_manager):
     assert to_compare == to_compare, "assert failed"
 ```
 
-3. The data will be now stored for the test_name 'test_bar' with the following parameters:
+Run the test suite as per usual. The data passed to upload_manager, 
+as well as the test data that is specified at the TestData container will be stored in an external file.
+For a json file output:
 
 ```json
 [
@@ -36,12 +38,12 @@ def test_bar(upload_manager):
 ]
 
 ```
-
-4. The test comparison itself will be stored with a convention of:
+## Miscellaneous 
+For order sakes, the plugin will use a test comparison convention of:
     * left- actual result.
     * right- expected result.
 
-## conftes.py hooks and fixtures
+## conftest.py hooks and fixtures
 
 In order to change the folder for either temporary or output files use conftest.py with the correct fixtures. example:
 
