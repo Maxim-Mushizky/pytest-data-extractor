@@ -1,6 +1,7 @@
 from typing import (
     Optional,
-    List
+    List,
+    TypeVar
 )
 from dataclasses import dataclass
 import dataclasses
@@ -9,25 +10,26 @@ import pandas as pd
 import json
 import datetime
 
+TestInput = TypeVar("TestInput")
 
-class SessionOutputGenerator:
-    DEFAULT_TEMP = "extractor_files.temp"
-    DEFAULT_OUTPUT = "extractor_files.output"
-    __DEFAULT_FILE_PREFIX = "output_data_"
+
+def _mkdir_if_none_exists(dirname: str) -> None:
+    """
+    Generate a directory if one doesn't exist in the given path.
+    :param dirname: Full or relative path to the requested directory
+    :return:
+    """
+    if not os.path.exists(dirname):
+        os.mkdir(dirname)
+
+
+class SuiteDataOutputGenerator:
+    CACHE_FILES_DIR = "extractor_files.temp"
+    OUTPUT_DIR = "extractor_files.output"
+    FILE_PREFIX = "output_data_"
     __TIME_FORMAT = "%Y%m%d_%H_%M_%S_%f"
 
-    def __init__(
-            self,
-            output_dir: Optional[str] = None,
-            temp_dir: Optional[str] = None,
-            data: Optional[dataclass] = None,
-    ) -> None:
-        if output_dir is None:
-            output_dir = self.DEFAULT_OUTPUT
-        if temp_dir is None:
-            temp_dir = self.DEFAULT_TEMP
-        self._output_dir = output_dir
-        self._temp_dir = temp_dir
+    def __init__(self, data: Optional[dataclass] = None) -> None:
         self._data = data
 
     @property
@@ -41,36 +43,59 @@ class SessionOutputGenerator:
         else:
             print(f"Wrong data type, dataclass is required but instead was fed {type(new_data)}")
 
-    def output_json(self, file_prefix: Optional[str] = None,
-                    temp_dir_extensions: Optional[str] = None) -> "SessionOutputGenerator":
+    def output_to_json(self, file_prefix: Optional[str] = None,
+                       cache_file_extensions: str = 'json') -> "SuiteDataOutputGenerator":
+        """
+        Output the test suite data into a json file.
+        If object cannot be serialized it will be cached locally and the relative path to it will be stored instead.
+        :param file_prefix: Prefix of output json
+        :param cache_file_extensions: Extension of the cached files
+        :return: the original object
+        """
         if file_prefix is None:
-            file_prefix = self.__DEFAULT_FILE_PREFIX
-        if temp_dir_extensions is None:
-            temp_dir_extensions = 'json'
+            file_prefix = self.FILE_PREFIX
 
         storage_as_dict = []
-        for d in self.data:
-            if d.expected_result is None and d.actual_result is None and d.test_input is None:
-                continue  # Drop from the finished file all irrelevant calls for the upload_manager fixture
-            if isinstance(d.test_input, pd.DataFrame):
-                fpath = DirDataSerializer(dirname=self._temp_dir).get_pandas_filename(data=d.test_input,
-                                                                                      f_ext=temp_dir_extensions,
-                                                                                      time_format=self.__TIME_FORMAT)
-                d.test_input = fpath  # pass the full filename path as test input
-
-            storage_as_dict.append(dataclasses.asdict(d))
-        self.__mkdir_if_none_exists(self._output_dir)
-        _path = self._get_output_full_path_in_dir(self._output_dir, file_prefix)
+        for test_data in self.data:
+            test_data = self._get_test_data_as_serializable(test_data=test_data,
+                                                            cache_file_extensions=cache_file_extensions)
+            if test_data is not None:
+                storage_as_dict.append(dataclasses.asdict(test_data))
+        _mkdir_if_none_exists(self.OUTPUT_DIR)
+        _path = self._get_indexed_output_paths(self.OUTPUT_DIR, file_prefix)
         with open(_path, "w") as f:
             json.dump(storage_as_dict, f, indent=4)
 
         return self
 
-    def __mkdir_if_none_exists(self, dirname: str) -> None:
-        if not os.path.exists(dirname):
-            os.mkdir(dirname)
+    def _get_test_data_as_serializable(self, test_data: TestInput,
+                                       cache_file_extensions: str) -> Optional[TestInput]:
+        """
+        Make sure that all the test data can be stored in a text based format (json, csv and etc).
+        If the data of specific large types it will store it as cache and will store as input the path to it.
+        Will also return nothing is the data doesn't add anything to final output file (empty tests).
+        :param test_data: dataclass containing all fields given in data containers
+        :param cache_file_extensions: File extension of the cache data
+        :return: serializable dataclass or None
+        """
+        if test_data is None and test_data.actual_result is None and test_data.test_input is None:
+            return None
+        if isinstance(test_data.test_input, pd.DataFrame):
+            fpath = ObjectSerializer(to=self.CACHE_FILES_DIR).get_pandas_filename(data=test_data.test_input,
+                                                                                  f_ext=cache_file_extensions,
+                                                                                  time_format=self.__TIME_FORMAT)
+            test_data.test_input = fpath  # pass the full filename path as test input
 
-    def _get_output_full_path_in_dir(self, dirname: str, file_prefix: str, f_ext: Optional[str] = None) -> str:
+        return test_data
+
+    def _get_indexed_output_paths(self, dirname: str, file_prefix: str, f_ext: Optional[str] = None) -> str:
+        """
+        Generate indexed output files in the desired directory
+        :param dirname: Relative or full path to desired directory
+        :param file_prefix: Prefix of the used files
+        :param f_ext: File extension of the generated files
+        :return: The relative path to the new generated file
+        """
         max_index = 0
         if f_ext is None:
             f_ext = 'json'
@@ -87,10 +112,10 @@ class SessionOutputGenerator:
         return os.path.join(dirname, filename)
 
 
-class DirDataSerializer:
+class ObjectSerializer:
 
-    def __init__(self, dirname: str, filename: Optional[str] = None) -> None:
-        self._dirname = dirname
+    def __init__(self, to: str, filename: Optional[str] = None) -> None:
+        self._dirname = to
         if filename is None:
             filename = ''  # reset as an empty string
         self._filename = filename
@@ -99,8 +124,7 @@ class DirDataSerializer:
                             time_format: str,
                             f_ext: str) -> str:
         """
-        Protect method:
-            Create and get file using a pandas dataframe object.
+        Generate and get cache file using a pandas dataframe object.
         :param data: Pandas DataFrame to be serialized
         :param dirname: Directory to save the serialized data
         :param filename: Default to None
@@ -111,23 +135,23 @@ class DirDataSerializer:
             raise TypeError(
                 f"This method is intended only for pandas dataframe objects. The data given is of type {type(data)}")
 
-        self.__mkdir_if_none_exists(self._dirname)
-        now = datetime.datetime.now().strftime(time_format)
-        self._filename += "_" + now
-        full_filename_path = f"{os.path.join(self._dirname, self._filename)}.{f_ext}"
+        generated_file_path = self._get_generated_cache_file_path(time_format=time_format,
+                                                                  f_ext=f_ext)
 
         # cases for filetypes
         if f_ext == 'json':
-            data.to_json(path_or_buf=full_filename_path,
+            data.to_json(path_or_buf=generated_file_path,
                          orient='records',
                          indent=4)
         elif f_ext == 'csv':
-            data.to_csv(path_or_buf=full_filename_path)
+            data.to_csv(path_or_buf=generated_file_path)
         else:
             raise Exception(f"Cannot handle given file extension {f_ext}")
 
-        return full_filename_path
+        return generated_file_path
 
-    def __mkdir_if_none_exists(self, dirname: str) -> None:
-        if not os.path.exists(dirname):
-            os.mkdir(dirname)
+    def _get_generated_cache_file_path(self, time_format: str, f_ext: str) -> str:
+        _mkdir_if_none_exists(self._dirname)
+        now = datetime.datetime.now().strftime(time_format)
+        self._filename += "_" + now
+        return f"{os.path.join(self._dirname, self._filename)}.{f_ext}"
