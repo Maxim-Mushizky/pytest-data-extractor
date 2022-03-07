@@ -11,8 +11,34 @@ from typing import (
 TestInput = TypeVar("TestInput")
 
 
+class ClassProperty:
+    def __init__(self, fget):
+        self.fget = fget
+
+    def __get__(self, owner_self, owner_cls):
+        return self.fget(owner_cls)
+
+
 class Cache:
-    data: List[TestData] = []
+    # Cache data
+    _activate: bool = False  # activate plugin
+    _data: List[TestData] = []
+
+    @ClassProperty
+    def data(cls):
+        if cls._activate:
+            return cls._data
+        return [TestData]  # So will not crash
+
+
+##### User editable fixtures #####
+def pytest_addoption(parser):
+    parser.addoption('--output_test_data', action='store', default=False, type=bool)
+
+
+@pytest.fixture(autouse=True)
+def activate_plugin(request) -> None:
+    Cache._activate = request.config.getoption('--output_test_data')
 
 
 @pytest.fixture
@@ -80,14 +106,19 @@ def pytest_assertrepr_compare(op, left, right):
         Cache.data.append(test_data)
 
 
+##### Main #####
 @pytest.hookimpl
 def pytest_assertion_pass():
+    if Cache.data[-1].expected_result is None and Cache.data[-1].actual_result is None:
+        Cache.data[-1].expected_result = True
+        Cache.data[-1].actual_result = True
     Cache.data[-1].test_status = TestStatus.Pass.value
 
 
 @pytest.hookimpl(trylast=True)
 def pytest_sessionfinish():
-    SuiteDataOutputGenerator(data=Cache.data).output_to_json()
+    if Cache._activate is True:  # output only if requested
+        SuiteDataOutputGenerator(data=Cache.data).output_to_json()
 
 
 @pytest.fixture(scope="function")

@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import pytest
 
 
 def test_demo_1(upload_manager):
@@ -30,3 +31,21 @@ def test_full_upload_manager(upload_manager):
                             expected_result=144,
                             actual_result=12 ** 2)
     assert my_val ** 2 == 144, "assertion failed"
+
+
+def test_try_and_skip():
+    pytest.skip("Skipping check")
+
+
+def test_try_and_raise_exception(upload_manager):
+    dummy_var = upload_manager([1])
+    raise Exception("Raising check exception")
+
+
+def test_boolean_true(upload_manager):
+    my_bool = upload_manager(True)
+    assert my_bool
+
+def test_boolean_false(upload_manager):
+    my_bool = upload_manager(False)
+    assert my_bool
