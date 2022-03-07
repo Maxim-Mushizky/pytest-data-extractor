@@ -27,7 +27,7 @@ class SuiteDataOutputGenerator:
     CACHE_FILES_DIR = "extractor_files.temp"
     OUTPUT_DIR = "extractor_files.output"
     FILE_PREFIX = "output_data_"
-    __TIME_FORMAT = "%Y%m%d_%H_%M_%S_%f"
+    _TIME_FORMAT = "%Y%m%d_%H_%M_%S_%f"
 
     def __init__(self, data: Optional[dataclass] = None) -> None:
         self._data = data
@@ -78,12 +78,12 @@ class SuiteDataOutputGenerator:
         :param cache_file_extensions: File extension of the cache data
         :return: serializable dataclass or None
         """
-        if test_data is None and test_data.actual_result is None and test_data.test_input is None:
+        if test_data.expected_result is None and test_data.actual_result is None and test_data.test_input is None:
             return None
         if isinstance(test_data.test_input, pd.DataFrame):
             fpath = ObjectSerializer(to=self.CACHE_FILES_DIR).get_pandas_filename(data=test_data.test_input,
                                                                                   f_ext=cache_file_extensions,
-                                                                                  time_format=self.__TIME_FORMAT)
+                                                                                  time_format=self._TIME_FORMAT)
             test_data.test_input = fpath  # pass the full filename path as test input
 
         return test_data

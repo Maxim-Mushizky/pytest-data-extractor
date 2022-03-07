@@ -1,5 +1,12 @@
 from dataclasses import dataclass, field
-from typing import Optional, Any, Dict
+from typing import Optional, Any
+from enum import Enum
+
+
+class TestStatus(Enum):
+    Skip = -1
+    Fail = 0
+    Pass = 1
 
 
 @dataclass

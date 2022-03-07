@@ -2,7 +2,7 @@
 
 Pytest plugin intended for extracting metadata about the test
 
-## Version 0.1.3
+## Version 0.1.4
 
 pip install the package to the your project's virtual environment. Directly from plugin folder:
 
@@ -20,9 +20,14 @@ def test_bar(upload_manager):
     assert to_compare == to_compare, "assert failed"
 ```
 
-Run the test suite as per usual. The data passed to upload_manager, 
-as well as the test data that is specified at the TestData container will be stored in an external file.
-For a json file output:
+Activate the plugin with the pytest cli with the command:
+
+```bash
+~/pytest-data-extractor$ pytest --output_test_data True
+```
+
+Now the data passed to upload_manager, as well as the test data that is specified at the TestData container will be
+stored in an external file. For a json file output:
 
 ```json
 [
@@ -38,7 +43,9 @@ For a json file output:
 ]
 
 ```
-## Miscellaneous 
+
+## Miscellaneous
+
 For order sakes, the plugin will use a test comparison convention of:
 
     * left- actual result.
