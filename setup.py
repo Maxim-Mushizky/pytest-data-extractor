@@ -1,6 +1,7 @@
 import os
 import codecs
 from setuptools import setup
+from pytest_data_extractor import VERSION
 
 
 def read(fname):
@@ -10,7 +11,7 @@ def read(fname):
 
 setup(
     name="pytest_data_extractor",
-    version="0.1.5",
+    version=VERSION,
     author="Maxim Mushizky",
     author_email="maximmu87@gmail.com",
     maintainer="Maxim Mushizky",
@@ -24,8 +25,8 @@ setup(
     ],
     classifiers=[
         "Framework :: Pytest",
-        "Licence :: MIT",
-        "Operating System :: Multi-platform",
+        "Operating System :: Microsoft :: Windows",
+        "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
     ],
     entry_points={

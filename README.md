@@ -2,7 +2,7 @@
 
 Pytest plugin intended for extracting metadata about the test
 
-## Version 0.1.4
+## Version 0.1.5
 
 pip install the package to the your project's virtual environment. Directly from plugin folder:
 
