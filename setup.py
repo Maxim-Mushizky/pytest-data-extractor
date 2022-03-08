@@ -1,7 +1,6 @@
 import os
 import codecs
 from setuptools import setup
-from pytest_data_extractor import VERSION
 
 
 def read(fname):
@@ -11,7 +10,7 @@ def read(fname):
 
 setup(
     name="pytest_data_extractor",
-    version=VERSION,
+    version="0.1.5",
     author="Maxim Mushizky",
     author_email="maximmu87@gmail.com",
     maintainer="Maxim Mushizky",
