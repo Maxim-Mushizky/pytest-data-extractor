@@ -94,7 +94,7 @@ def update_suite_output_file_prefix(suite_output_file_prefix: Optional[str]) -> 
 
 @pytest.hookimpl(tryfirst=True)
 def pytest_assertrepr_compare(op, left, right):
-    if len(Cache.data) and Cache.data[-1].test_operator is None:
+    if len(Cache.data) and Cache.data[-1].test_status is None:
         if Cache.data[-1].actual_result is None:
             Cache.data[-1].actual_result = left
         if Cache.data[-1].expected_result is None:
@@ -140,6 +140,11 @@ def upload_manager():
 def pytest_report_teststatus(report):
     if report.when == "call" and report.skipped:
         Cache.data[-1].test_status = TestStatus.Skip.value
+    elif report.when == "call" and not report.skipped:
+        if report.passed:
+            Cache.data[-1].test_status = TestStatus.Pass.value
+        else:
+            Cache.data[-1].test_status = TestStatus.Fail.value
 
         # manage times
     if report.when == "call":
