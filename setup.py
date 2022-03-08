@@ -16,7 +16,6 @@ setup(
     maintainer="Maxim Mushizky",
     license="MIT",
     description="A pytest plugin to extract relevant metadata about tests into an external file (currently only json support)",
-    long_description=read("README.md"),
     install_requires=[
         "pytest>=7.0.1",
         "pandas>=1.3.5",
