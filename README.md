@@ -16,8 +16,8 @@ Go to a test file and now simply add upload_manager fixture in order to save a v
 # test_foo.py
 
 def test_bar(upload_manager):
-    to_compare = upload_manager(1000)
-    assert to_compare == to_compare, "assert failed"
+    expected_value = upload_manager(1000)
+    assert expected_value == 1000, "assert failed"
 ```
 
 Activate the plugin with the pytest cli with the command:

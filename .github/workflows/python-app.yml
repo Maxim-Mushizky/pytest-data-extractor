@@ -25,8 +25,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8 pytest mypy
-        pip install -e .
+        pip install flake8 mypy
+        python -m pip install -e .
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
       run: |
@@ -39,4 +39,4 @@ jobs:
         mypy -m pytest_data_extractor
     - name: Test with pytest
       run: |
-        pytest
+        python -m pytest --output_test_data True
