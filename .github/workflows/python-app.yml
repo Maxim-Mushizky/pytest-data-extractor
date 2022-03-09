@@ -39,4 +39,4 @@ jobs:
         mypy -m pytest_data_extractor
     - name: Test with pytest
       run: |
-        python -m pytest --output_test_data True
+        python -m pytest -v --output_test_data True

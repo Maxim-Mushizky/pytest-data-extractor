@@ -1,4 +1,4 @@
-# pytest-data-extractor
+# pytest-data-extractor ![example workflow](https://github.com/Maxim-Mushizky/pytest-data-extractor/actions/workflows/python-app.yml/badge.svg)
 
 Pytest plugin intended for extracting metadata about the test
 
