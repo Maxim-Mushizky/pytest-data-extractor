@@ -17,7 +17,6 @@ class MetaData:
 @dataclass
 class TestData:
     test_input: Optional[Any] = field(default=None)
-    # func_args: Optional[Dict] = field(default_factory=dict)
     expected_result: Optional[Any] = field(default=None)
     actual_result: Optional[Any] = field(default=None)
     test_operator: Optional[str] = field(default=None)
