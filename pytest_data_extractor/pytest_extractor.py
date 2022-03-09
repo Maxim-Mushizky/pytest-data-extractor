@@ -31,7 +31,7 @@ class Cache:
         return [TestData]  # So will not crash
 
 
-##### User editable fixtures #####
+# User editable fixtures
 def pytest_addoption(parser):
     parser.addoption('--output_test_data', action='store', default=False, type=bool)
 
@@ -106,7 +106,7 @@ def pytest_assertrepr_compare(op, left, right):
         Cache.data.append(test_data)
 
 
-##### Main #####
+# Main
 @pytest.hookimpl
 def pytest_assertion_pass():
     if Cache.data[-1].expected_result is None and Cache.data[-1].actual_result is None:
