@@ -13,6 +13,7 @@ setup(
     version="0.1.5",
     author="Maxim Mushizky",
     author_email="maximmu87@gmail.com",
+    long_description=read('README.md'),
     maintainer="Maxim Mushizky",
     license="MIT",
     description="A pytest plugin to extract relevant metadata about tests into an external file (currently only json support)",
