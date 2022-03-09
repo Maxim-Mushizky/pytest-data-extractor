@@ -2,12 +2,12 @@
 
 Pytest plugin intended for extracting metadata about the test
 
-## Version 0.1.5
+## Version 0.1.6
 
 pip install the package to the your project's virtual environment. Directly from plugin folder:
 
 ```bash
-~/pytest-data-extractor$ pip install -e .
+pip install -e .
 ```
 
 Go to a test file and now simply add upload_manager fixture in order to save a variable (except callable), Like so:
@@ -23,7 +23,7 @@ def test_bar(upload_manager):
 Activate the plugin with the pytest cli with the command:
 
 ```bash
-~/pytest-data-extractor$ pytest --output_test_data True
+pytest --output_test_data True
 ```
 
 Now the data passed to upload_manager, as well as the test data that is specified at the TestData container will be
