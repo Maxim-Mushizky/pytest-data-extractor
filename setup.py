@@ -14,6 +14,7 @@ setup(
     author="Maxim Mushizky",
     author_email="maximmu87@gmail.com",
     long_description=read('README.md'),
+    long_description_content_type='text/markdown',
     maintainer="Maxim Mushizky",
     license="MIT",
     description="A pytest plugin to extract relevant metadata about tests into an external file (currently only json support)",
