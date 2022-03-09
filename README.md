@@ -1,10 +1,10 @@
-# pytest-data-extractor ![example workflow](https://github.com/Maxim-Mushizky/pytest-data-extractor/actions/workflows/python-app.yml/badge.svg)
+# pytest-data-extractor ![example workflow](https://github.com/Maxim-Mushizky/pytest-data-extractor/actions/workflows/python-app.yml/badge.svg?event=push)
 
 Pytest plugin intended for extracting metadata about the test
 
 ## Version 0.1.6
 
-pip install the package to the your project's virtual environment. Directly from plugin folder:
+pip install the package to your project's virtual environment. Directly from plugin folder:
 
 ```bash
 pip install -e .
