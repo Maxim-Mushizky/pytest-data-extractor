@@ -10,13 +10,14 @@ def read(fname):
 
 setup(
     name="pytest_data_extractor",
-    version="0.1.4",
+    version="0.1.6",
     author="Maxim Mushizky",
     author_email="maximmu87@gmail.com",
+    long_description=read('README.md'),
+    long_description_content_type='text/markdown',
     maintainer="Maxim Mushizky",
     license="MIT",
     description="A pytest plugin to extract relevant metadata about tests into an external file (currently only json support)",
-    long_description=read("README.md"),
     install_requires=[
         "pytest>=7.0.1",
         "pandas>=1.3.5",
@@ -25,8 +26,8 @@ setup(
     ],
     classifiers=[
         "Framework :: Pytest",
-        "Licence :: MIT",
-        "Operating System :: Multi-platform",
+        "Operating System :: Microsoft :: Windows",
+        "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
     ],
     entry_points={

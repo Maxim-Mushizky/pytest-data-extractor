@@ -33,19 +33,29 @@ def test_full_upload_manager(upload_manager):
     assert my_val ** 2 == 144, "assertion failed"
 
 
-def test_try_and_skip():
+def test_try_and_skip(upload_manager):
+    foo = upload_manager("foo")
     pytest.skip("Skipping check")
 
 
 def test_try_and_raise_exception(upload_manager):
     dummy_var = upload_manager([1])
-    raise Exception("Raising check exception")
+    with pytest.raises(Exception):
+        raise Exception("Raising check exception")
 
 
 def test_boolean_true(upload_manager):
     my_bool = upload_manager(True)
     assert my_bool
 
+
 def test_boolean_false(upload_manager):
     my_bool = upload_manager(False)
-    assert my_bool
+    assert not my_bool
+
+
+@pytest.mark.parametrize('x', list(range(10)))
+def test_with_parametrize(x, upload_manager):
+    tested_val = upload_manager(x)
+    assert isinstance(tested_val, int)
+    assert tested_val >= 0

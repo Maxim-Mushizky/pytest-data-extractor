@@ -22,6 +22,6 @@ class TestData:
     actual_result: Optional[Any] = field(default=None)
     test_operator: Optional[str] = field(default=None)
     test_func: Optional[str] = field(default=None)
-    test_status: int = field(default=0)  # 1- Pass , 0- Fail, -1- Skip
+    test_status: Optional[int] = field(default=None)
     test_duration: float = field(default_factory=float)
     meta_data: Optional[MetaData] = field(default=None)

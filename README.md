@@ -1,13 +1,13 @@
-# pytest-data-extractor
+# pytest-data-extractor ![example workflow](https://github.com/Maxim-Mushizky/pytest-data-extractor/actions/workflows/python-app.yml/badge.svg)
 
 Pytest plugin intended for extracting metadata about the test
 
-## Version 0.1.4
+## Version 0.1.6
 
-pip install the package to the your project's virtual environment. Directly from plugin folder:
+pip install the package to your project's virtual environment. Directly from plugin folder:
 
 ```bash
-~/pytest-data-extractor$ pip install -e .
+pip install -e .
 ```
 
 Go to a test file and now simply add upload_manager fixture in order to save a variable (except callable), Like so:
@@ -16,14 +16,14 @@ Go to a test file and now simply add upload_manager fixture in order to save a v
 # test_foo.py
 
 def test_bar(upload_manager):
-    to_compare = upload_manager(1000)
-    assert to_compare == to_compare, "assert failed"
+    expected_value = upload_manager(1000)
+    assert expected_value == 1000, "assert failed"
 ```
 
 Activate the plugin with the pytest cli with the command:
 
 ```bash
-~/pytest-data-extractor$ pytest --output_test_data True
+pytest --output_test_data True
 ```
 
 Now the data passed to upload_manager, as well as the test data that is specified at the TestData container will be
