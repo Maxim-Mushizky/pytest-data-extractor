@@ -14,6 +14,11 @@ pip install the package to your project's virtual environment. Directly from plu
 pip install -e .
 ```
 
+or pip install it from Pypi:
+```bash
+pip install pytest-data-extractor
+```
+
 Go to a test file and now simply add upload_manager fixture in order to save a variable (except callable), Like so:
 
 ```python
