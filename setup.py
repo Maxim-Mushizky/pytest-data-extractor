@@ -20,8 +20,6 @@ setup(
     description="A pytest plugin to extract relevant metadata about tests into an external file (currently only json support)",
     install_requires=[
         "pytest>=7.0.1",
-        "pandas>=1.3.5",
-        "numpy>=1.21.5",
         "setuptools>=41.2.0"
     ],
     classifiers=[
