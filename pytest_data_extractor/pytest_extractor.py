@@ -123,15 +123,15 @@ def pytest_sessionfinish():
 
 @pytest.fixture(scope="function")
 def upload_manager():
-    def manager(var_value: TestInput,
+    def manager(test_input: TestInput,
                 expected_result: Optional[TestInput] = None,
                 actual_result: Optional[TestInput] = None) -> TestInput:
-        test_data = TestData(test_input=var_value,
+        test_data = TestData(test_input=test_input,
                              expected_result=expected_result,
                              actual_result=actual_result,
                              test_func=inspect.stack()[1][3])
         Cache.data.append(test_data)
-        return var_value
+        return test_input
 
     return manager
 
