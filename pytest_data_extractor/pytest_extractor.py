@@ -8,25 +8,19 @@ from typing import (
     Optional
 )
 
+from pytest_data_extractor import utils
+
 TestInput = TypeVar("TestInput")
-
-
-class ClassProperty:
-    def __init__(self, fget):
-        self.fget = fget
-
-    def __get__(self, owner_self, owner_cls):
-        return self.fget(owner_cls)
 
 
 class Cache:
     # Cache data
-    _activate: bool = False  # activate plugin
+    activate: bool = False  # activate plugin
     _data: List[TestData] = []
 
-    @ClassProperty
+    @utils.ClassProperty
     def data(cls):
-        if cls._activate:
+        if cls.activate:
             return cls._data
         return [TestData]  # So will not crash
 
@@ -38,21 +32,21 @@ def pytest_addoption(parser):
 
 @pytest.fixture(autouse=True)
 def activate_plugin(request) -> None:
-    Cache._activate = request.config.getoption('--output_test_data')
+    Cache.activate = request.config.getoption('--output_test_data')
 
 
 @pytest.fixture
-def suite_output_dir():
+def suite_output_dir() -> None:
     return None
 
 
 @pytest.fixture
-def suite_cache_dir():
+def suite_cache_dir() -> None:
     return None
 
 
 @pytest.fixture
-def suite_output_file_prefix():
+def suite_output_file_prefix() -> None:
     return None
 
 
@@ -93,16 +87,23 @@ def update_suite_output_file_prefix(suite_output_file_prefix: Optional[str]) -> 
 
 
 @pytest.hookimpl(tryfirst=True)
-def pytest_assertrepr_compare(op, left, right):
-    if len(Cache.data) and Cache.data[-1].test_status is None:
+def pytest_assertrepr_compare(config, op, left, right) -> None:
+    test_func = ""
+    if hasattr(config, '_teamcityReporting'):
+        test_func = list(config._teamcityReporting.test_start_reported_mark)[0].split(".")[-1]
+    if len(Cache.data) and Cache.data[-1].test_status is None or Cache.data[-1].test_func == test_func:
         if Cache.data[-1].actual_result is None:
             Cache.data[-1].actual_result = left
         if Cache.data[-1].expected_result is None:
             Cache.data[-1].expected_result = right
         Cache.data[-1].test_operator = op
-        # Storage.data[-1].func_args = func_args
-    else:
-        test_data = TestData(actual_result=left, expected_result=right, test_operator=op)  # func_args=func_args)
+    if (len(Cache.data) == 0) or len(Cache.data) > 0 and Cache.data[-1].test_func not in test_func:
+        test_data = TestData(
+            actual_result=left,
+            expected_result=right,
+            test_operator=op,
+            test_func=test_func
+        )
         Cache.data.append(test_data)
 
 
@@ -117,7 +118,7 @@ def pytest_assertion_pass():
 
 @pytest.hookimpl(trylast=True)
 def pytest_sessionfinish():
-    if Cache._activate is True:  # output only if requested
+    if Cache.activate is True:  # output only if requested
         SuiteDataOutputGenerator(data=Cache.data).output_to_json()
 
 
