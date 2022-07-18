@@ -7,7 +7,7 @@ on:
   push:
     branches:
       - main
-      - extending_features
+      - develop-maxim
   pull_request:
     branches: [ main ]
 

@@ -1,12 +1,9 @@
 from dataclasses import dataclass, field
 from typing import (
     Optional,
-    Any,
-    List
+    Any
 )
 from enum import Enum
-from pydantic import BaseModel, Field
-from datetime import datetime
 
 
 class TestStatus(Enum):
@@ -18,6 +15,12 @@ class TestStatus(Enum):
 @dataclass
 class MetaData:
     project_name: Optional[str] = field(default_factory=str)
+
+
+@dataclass
+class TestInput:
+    test_file_path: Optional[str] = field(default=None)
+    file_type: Optional[str] = field(default=None)
 
 
 @dataclass
