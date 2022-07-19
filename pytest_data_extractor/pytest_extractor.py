@@ -107,12 +107,11 @@ def pytest_assertrepr_compare(config, op, left, right) -> None:
         Cache.data.append(test_data)
 
 
-# Main
-@pytest.hookimpl
+@pytest.hookimpl(trylast=True)
 def pytest_assertion_pass():
-    if Cache.data[-1].expected_result is None and Cache.data[-1].actual_result is None:
-        Cache.data[-1].expected_result = True
-        Cache.data[-1].actual_result = True
+    Cache.data[-1].expected_result = None
+    Cache.data[-1].actual_result = None
+    Cache.data[-1].test_operator = None
     Cache.data[-1].test_status = TestStatus.Pass.value
 
 
@@ -127,11 +126,15 @@ def upload_manager():
     def manager(test_input: TestInput,
                 expected_result: Optional[TestInput] = None,
                 actual_result: Optional[TestInput] = None) -> TestInput:
-        test_data = TestData(test_input=test_input,
-                             expected_result=expected_result,
-                             actual_result=actual_result,
-                             test_func=inspect.stack()[1][3])
-        Cache.data.append(test_data)
+        test_func = inspect.stack()[1][3]
+        if len(Cache.data) == 0 or (len(Cache.data) > 0 or Cache.data[-1].test_func != test_func):
+            test_data = TestData(test_input=test_input,
+                                 expected_result=expected_result,
+                                 actual_result=actual_result,
+                                 test_func=test_func)
+            Cache.data.append(test_data)
+        elif len(Cache.data) > 0 and Cache.data[-1].test_func == test_func:
+            Cache.data[-1].test_inputs.append(test_input)
         return test_input
 
     return manager
@@ -147,12 +150,16 @@ def pytest_report_teststatus(report):
         else:
             Cache.data[-1].test_status = TestStatus.Fail.value
 
-        # manage times
     if report.when == "call":
+        current_test_func = report.nodeid.split("::")[-1]
+        if len(Cache.data) > 0 and Cache.data[-1].test_func != current_test_func:
+            Cache.data[-1].test_func = current_test_func
         Cache.data[-1].test_duration = report.duration
+        if Cache.data[-1].test_func is None:
+            Cache.data[-1].test_func = report.head_line
 
 
-@pytest.hookimpl
+@pytest.hookimpl(trylast=True)
 def pytest_runtest_protocol(item):
     # global func_args
     if hasattr(item, "function") and hasattr(item, "funcargs"):
@@ -170,8 +177,18 @@ def pytest_runtest_protocol(item):
 
 @pytest.hookimpl(trylast=True)
 def pytest_exception_interact(call, report):
+    current_test_func = report.nodeid.split("::")[-1]
     if hasattr(report, 'failed') and report.failed is True:
-        if Cache.data[-1].test_operator is None:
-            Cache.data[-1].actual_result = False
-            Cache.data[-1].expected_result = True
-        Cache.data[-1].test_status = TestStatus.Fail.value
+        if len(Cache.data) > 0 and Cache.data[-1].test_func == current_test_func:
+            if Cache.data[-1].test_operator is None:
+                Cache.data[-1].actual_result = False
+                Cache.data[-1].expected_result = True
+            elif len(Cache.data) > 0 and Cache.data[-1].test_func != current_test_func:
+                test_data = TestData(
+                    test_input=[],
+                    expected_result=True,
+                    actual_result=True,
+                    test_func=current_test_func
+                )
+                Cache.data.append(test_data)
+    Cache.data[-1].test_status = TestStatus.Fail.value
