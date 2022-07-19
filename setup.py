@@ -10,7 +10,7 @@ def read(fname):
 
 setup(
     name="pytest_data_extractor",
-    version="0.2.0",
+    version="0.1.7",
     author="Maxim Mushizky",
     author_email="maximmu87@gmail.com",
     long_description=read('README.md'),

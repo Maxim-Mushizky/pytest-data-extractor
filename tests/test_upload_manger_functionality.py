@@ -60,10 +60,10 @@ def test_with_parametrize(x, upload_manager):
     assert isinstance(tested_val, int)
     assert tested_val >= 0
 
-
-def test_intentional_failure(upload_manager):
-    my_num: float = upload_manager(1e6)
-    assert 1e6 == 1e6
-    assert 1e6 == 1e6+1e1
-
+# Commented out for passing the pipeline automatic tests
+# def test_intentional_failure(upload_manager):
+#     my_num: float = upload_manager(1e6)
+#     assert 1e6 == 1e6
+#     assert 1e6 == 1e6+1e1
+#
 

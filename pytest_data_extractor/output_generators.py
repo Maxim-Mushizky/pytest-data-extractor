@@ -1,18 +1,15 @@
 from typing import (
     Optional,
     List,
-    TypeVar,
     Any,
     Sequence,
     Dict
 )
 from dataclasses import dataclass
-import dataclasses
 import os
 from pathlib import Path
 import pandas as pd
 import json
-import datetime
 
 from pytest_data_extractor import utils
 import pytest_data_extractor.data_containers as dc
