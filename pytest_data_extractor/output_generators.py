@@ -73,7 +73,8 @@ class SuiteDataOutputGenerator:
         :param cache_file_extensions: Extension of the cached files
         :return: the original object
         """
-        if file_prefix is None: file_prefix = self.FILE_PREFIX
+        if file_prefix is None:
+            file_prefix = self.FILE_PREFIX
 
         dump_stage = self._get_dumping_data(cache_dir_extension=cache_dir_extension)
         utils.mkdir_if_none_exists(self.OUTPUT_DIR)
@@ -93,5 +94,6 @@ class SuiteDataOutputGenerator:
                 cache_files_dir=self.CACHE_FILES_DIR,
                 cache_dir_file_extensions=cache_dir_extension
             ) for single_input in test_doc.test_input]
-            if test_doc is not None: dumping_data.append(utils.dataclass_to_dict(data=test_doc))
+            if test_doc is not None:
+                dumping_data.append(utils.dataclass_to_dict(data=test_doc))
         return dumping_data

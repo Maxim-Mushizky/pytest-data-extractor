@@ -32,7 +32,8 @@ class ObjectStore(abc.ABC, metaclass=abc.ABCMeta):
                  filename: Union[str, Path, None] = None) -> None:
         self._dirname = to
         self._data = data
-        if filename is None: filename = ""
+        if filename is None:
+            filename = ""
         self._filename = filename
 
     @property
