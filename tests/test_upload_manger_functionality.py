@@ -59,3 +59,11 @@ def test_with_parametrize(x, upload_manager):
     tested_val = upload_manager(x)
     assert isinstance(tested_val, int)
     assert tested_val >= 0
+
+
+def test_intentional_failure(upload_manager):
+    my_num: float = upload_manager(1e6)
+    assert 1e6 == 1e6
+    assert 1e6 == 1e6+1e1
+
+
