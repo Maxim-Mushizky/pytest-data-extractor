@@ -91,10 +91,10 @@ class SuiteDataOutputGenerator:
     def _get_dumping_data(self, cache_dir_extension: str) -> List[Dict]:
         dumping_data = []
         for test_doc in self._data:
-            test_doc.test_inputs = [get_cached_test_input_data(
+            test_doc.test_input = [get_cached_test_input_data(
                 single_input=single_input,
                 cache_files_dir=self.CACHE_FILES_DIR,
                 cache_dir_file_extensions=cache_dir_extension
-            ) for single_input in test_doc.test_inputs]
+            ) for single_input in test_doc.test_input]
             if test_doc is not None: dumping_data.append(utils.dataclass_to_dict(data=test_doc))
         return dumping_data

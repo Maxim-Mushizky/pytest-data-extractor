@@ -27,7 +27,7 @@ def test_boolean(upload_manager):
 
 
 def test_full_upload_manager(upload_manager):
-    my_val = upload_manager(var_value=12,
+    my_val = upload_manager(test_input=12,
                             expected_result=144,
                             actual_result=12 ** 2)
     assert my_val ** 2 == 144, "assertion failed"

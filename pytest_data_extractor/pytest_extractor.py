@@ -5,7 +5,8 @@ import inspect
 from typing import (
     List,
     TypeVar,
-    Optional
+    Optional,
+    Iterable
 )
 
 from pytest_data_extractor import utils
@@ -128,7 +129,7 @@ def upload_manager():
                 actual_result: Optional[TestInput] = None) -> TestInput:
         test_func = inspect.stack()[1][3]
         if len(Cache.data) == 0 or (len(Cache.data) > 0 or Cache.data[-1].test_func != test_func):
-            test_data = TestData(test_input=test_input,
+            test_data = TestData(test_input=test_input if isinstance(test_input, Iterable) else [test_input],
                                  expected_result=expected_result,
                                  actual_result=actual_result,
                                  test_func=test_func)
