@@ -7,7 +7,7 @@ on:
   push:
     branches:
       - main
-      - extending_features
+      - develop-maxim
   pull_request:
     branches: [ main ]
 
@@ -39,4 +39,4 @@ jobs:
         mypy -m pytest_data_extractor
     - name: Test with pytest
       run: |
-        python -m pytest -v --output_test_data True
+        python -m pytest -v

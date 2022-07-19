@@ -5,7 +5,7 @@ The plugin currently support json files.
 
 This is a completely open source project so everyone are more than welcome to join and extended it.
 
-## Version 0.1.6
+## Version 0.1.7
 # Use case
 
 pip install the package to your project's virtual environment. Directly from plugin folder:
@@ -41,20 +41,25 @@ stored in an external file. For a json file output:
 ```json
 [
   {
-    "test_input": 1000,
-    "expected": 1000,
-    "actual": 1000,
-    "operator": "==",
-    "test_func": "test_bar",
-    "test_status": 1,
-    "test_duration": 0.010749192908406258
-  }
+        "test_input": [
+            {
+                "test_file_path": "_20220719_21_00_10_806534.csv",
+                "file_type": "csv"
+            }
+        ],
+        "expected_result": null,
+        "actual_result": null,
+        "test_operator": null,
+        "test_func": "test_bar",
+        "test_status": 1,
+        "test_duration": 0.046707000000000054,
+        "meta_data": null
+    }
 ]
 
 ```
-
-There are specific input types that instead of being serialized to the main json file, will be stored as cache files.
-Currently pandas dataframes are supported, so if upload_manager is invoked on it, it will be stored in cache folder.<br>
+In version 0.1.7 there's no recording of the expected_result, actual_result and test_operator since the test result is a PASS.
+Additionally, all objects passed to the upload_manager fixture will be saved as an external file that will be associated by test_file_path param.
 <b>There's no garbage collection so be mindful how and where the files are stored.
 
 ## Miscellaneous
@@ -74,14 +79,29 @@ import pytest
 
 
 @pytest.fixture
-def session_output_dir():
+def suite_output_dir():
     return "my_files.output"
 
 
 @pytest.fixture
-def session_temp_dir():
+def suite_cache_dir():
     return "my_files.temp"
+
+@pytest.fixture
+def suite_output_file_prefix():
+    return "my_special_prefix"
+
+```
+
+## Enumeration
+By default there are 3 values for the test values in the data_containers.py file:
+```python
+class TestStatus(Enum):
+    Skip = -1
+    Fail = 0
+    Pass = 1
 
 ```
 
 The default directories will be at the root where the pytest is called.
+Supports automatic pipeline

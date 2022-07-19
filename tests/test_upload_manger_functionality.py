@@ -27,7 +27,7 @@ def test_boolean(upload_manager):
 
 
 def test_full_upload_manager(upload_manager):
-    my_val = upload_manager(var_value=12,
+    my_val = upload_manager(test_input=12,
                             expected_result=144,
                             actual_result=12 ** 2)
     assert my_val ** 2 == 144, "assertion failed"
@@ -59,3 +59,11 @@ def test_with_parametrize(x, upload_manager):
     tested_val = upload_manager(x)
     assert isinstance(tested_val, int)
     assert tested_val >= 0
+
+# Commented out for passing the pipeline automatic tests
+# def test_intentional_failure(upload_manager):
+#     my_num: float = upload_manager(1e6)
+#     assert 1e6 == 1e6
+#     assert 1e6 == 1e6+1e1
+#
+
