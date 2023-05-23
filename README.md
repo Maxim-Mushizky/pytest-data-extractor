@@ -1,4 +1,5 @@
-# pytest-data-extractor ![example workflow](https://github.com/Maxim-Mushizky/pytest-data-extractor/actions/workflows/python-app.yml/badge.svg) [![PyPI version](https://badge.fury.io/py/pytest-data-extractor.svg)](https://badge.fury.io/py/pytest-data-extractor)
+# pytest-data-extractor ![example workflow](https://github.com/Maxim-Mushizky/pytest-data-extractor/actions/workflows/python-app.yml/badge.svg) [![PyPI version](https://badge.fury.io/py/pytest-data-extractor.svg)](https://badge.fury.io/py/pytest-data-extractor) [![Downloads](https://static.pepy.tech/badge/pytest-data-extractor)](https://pepy.tech/project/pytest-data-extractor)
+
 
 Pytest plugin intended for extracting test data and metadata and serializing it into a file. 
 The plugin currently support json files.
